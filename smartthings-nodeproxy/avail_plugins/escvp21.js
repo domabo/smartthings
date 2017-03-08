@@ -77,12 +77,13 @@ function ESCVP21 () {
     if (device && device.isOpen()) { return };
 
     device = new serialport(nconf.get('epson:serialPort'), {
-        parser: serialport.parsers.readline('\r'),
+        parser: serialport.parsers.raw,
         baudrate: 9600,
         autoOpen: false
       });
 
     device.on('data', function(data) {
+      data = data.toString('utf8');
       read(data);
       const last = data.substr(data.length-1);
       console.log("LAST" + last);
