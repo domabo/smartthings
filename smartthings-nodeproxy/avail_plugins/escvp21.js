@@ -86,11 +86,9 @@ function ESCVP21 () {
       read(data);
       const last = data.substr(data.length-1);
       if (last == ":") {
-        let currCommand = queue.shift();
+        var currCommand = queue.shift();
         if (currCommand) {
             write(currCommand + "\r");
-        } else {
-            disconnect();
         }
       }
     });
@@ -146,6 +144,7 @@ function ESCVP21 () {
            response_handler('OFF');
          else 
            response_handler('ON');
+       }
     } catch (err) {
       logger('Error: '+err);
     }
