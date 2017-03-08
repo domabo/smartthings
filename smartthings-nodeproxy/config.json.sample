@@ -3,6 +3,18 @@
   "port": 8080,                   // STNP service port
   "authCode": "secret-key",       // Set the auth code to access STNP
 
+
+   // Epson Projector (ESC/VP21 protocol e.g. Epson 8050)
+  "epson": {
+    "serialPort": "/dev/ttyUSB0",  // RS-232 port connected to Epson Projector
+    "projectorConfig": {         // Set this to define zones
+      "type": "discover",
+      "projectors": [{
+        "projector": 0
+      }]
+    }
+  },
+
   // Russound RNET
   "rnet": {
     "serialPort": "/dev/usbser",  // RS-232 port connected to Russound controller
