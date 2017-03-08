@@ -69,7 +69,7 @@ function ESCVP21 () {
   this.init = function() {
     getSerialPorts();
 
-    if (!nconf.get('espon:serialPort')) {
+    if (!nconf.get('epson:serialPort')) {
         logger('** NOTICE ** Epson serial port not set in config file!');
         return;
     }
