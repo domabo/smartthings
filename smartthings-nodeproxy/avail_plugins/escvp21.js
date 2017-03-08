@@ -85,14 +85,10 @@ function ESCVP21 () {
     device.on('data', function(data) {
       data = data.toString('utf8');
       read(data);
-      const last = data.substr(data.length-1);
-      console.log("LAST" + last);
-      if (last == ":") {
         var currCommand = queue.shift();
         if (currCommand) {
             write(currCommand + "\r");
         }
-      }
     });
 
     device.open(function(error) {
@@ -119,7 +115,7 @@ function ESCVP21 () {
     }
 
     if (!cmd || cmd.length == 0) { return; }
-    console.log("WRITE:" + cmd);
+    console.log("WRITE> " + cmd);
     device.write(cmd, function(err, results) {
       if (err) logger('Epson Projector write error: '+err);
     });
@@ -135,7 +131,7 @@ function ESCVP21 () {
    * read
    */
   function read(data) {
-    console.log("RCV: " + data);
+    console.log("RCV< " + data);
     if (data.length == 0) { return; }
 
     try {

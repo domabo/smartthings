@@ -55,6 +55,7 @@ app.use(function (req, res, next) {
  * @param {String} host - The SmartThings Hub IP address and port number
  */
 app.get('/subscribe/:host', function (req, res) {
+  console.log("SUBSRIBE");
   var parts = req.params.host.split(":");
   nconf.set('notify:address', parts[0]);
   nconf.set('notify:port', parts[1]);
