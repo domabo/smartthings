@@ -133,7 +133,7 @@ function ESCVP21 () {
    * read
    */
   function read(data) {
-    console.log(data);
+    console.log("RCV: " + data);
     if (data.length == 0) { return; }
 
     try {
