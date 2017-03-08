@@ -77,7 +77,7 @@ function ESCVP21 () {
     if (device && device.isOpen()) { return };
 
     device = new serialport(nconf.get('epson:serialPort'), {
-        parser: serialport.parsers.readline(':'),
+        parser: serialport.parsers.readline('\r'),
         baudrate: 9600,
         autoOpen: false
       });
@@ -85,6 +85,7 @@ function ESCVP21 () {
     device.on('data', function(data) {
       read(data);
       const last = data.substr(data.length-1);
+      console.log("LAST" + last);
       if (last == ":") {
         var currCommand = queue.shift();
         if (currCommand) {
@@ -117,7 +118,7 @@ function ESCVP21 () {
     }
 
     if (!cmd || cmd.length == 0) { return; }
-    console.log(cmd);
+    console.log("WRITE:" + cmd);
     device.write(cmd, function(err, results) {
       if (err) logger('Epson Projector write error: '+err);
     });
