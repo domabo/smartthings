@@ -137,7 +137,7 @@ function ESCVP21 () {
     if (data.length == 0) { return; }
 
     try {
-       var m = response.match(/PWR=(.*)$/);
+       var m = data.match(/PWR=(.*)$/);
        if (m) {
          var level = m[1];
          if (level=='00')
