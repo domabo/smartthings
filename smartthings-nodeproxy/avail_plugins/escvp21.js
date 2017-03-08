@@ -77,7 +77,7 @@ function ESCVP21 () {
     if (device && device.isOpen()) { return };
 
     device = new serialport(nconf.get('epson:serialPort'), {
-        parser: serialport.parsers.raw,
+        parser: EscParser(),
         baudrate: 9600,
         autoOpen: false
       });
@@ -169,4 +169,17 @@ function ESCVP21 () {
       logger('Detected serial ports: ' + JSON.stringify(serialPorts));
     });
   }
+
+  function EscParser() {
+    var data = '';
+    return function(emitter, buffer) {
+      // Collect data
+      data += buffer.toString('utf8');
+      var parts = data.split(/[:\r]/);
+      data = parts.pop();
+      parts.forEach(function(part) {
+        emitter.emit('data', part + ':');
+      });
+    };
+  },
 }
