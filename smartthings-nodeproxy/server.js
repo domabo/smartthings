@@ -99,6 +99,7 @@ fs.readdir('./plugins', function(err, files) {
  * @param {String} data - The HTTP message body
  */
 var notify = function(plugin, data) {
+  console.log(data);
   if (!nconf.get('notify:address') || nconf.get('notify:address').length == 0 ||
     !nconf.get('notify:port') || nconf.get('notify:port') == 0) {
     logger("Notify server address and port not set!");

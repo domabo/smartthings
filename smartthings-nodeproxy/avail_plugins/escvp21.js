@@ -41,7 +41,6 @@ app.get('/on', function (req, res) {
   res.end();
 });
 
-
 app.get('/status', function (req, res) {
   vp21.command('PWR?');
   res.end();
@@ -78,13 +77,22 @@ function ESCVP21 () {
     if (device && device.isOpen()) { return };
 
     device = new serialport(nconf.get('epson:serialPort'), {
-        parser: serialport.parsers.readline('\n'),
+        parser: serialport.parsers.readline(':'),
         baudrate: 9600,
         autoOpen: false
       });
 
     device.on('data', function(data) {
       read(data);
+      const last = data.substr(data.length-1);
+      if (last == ":") {
+        let currCommand = queue.shift();
+        if (currCommand) {
+            write(currCommand + "\r");
+        } else {
+            disconnect();
+        }
+      }
     });
 
     device.open(function(error) {
@@ -111,32 +119,41 @@ function ESCVP21 () {
     }
 
     if (!cmd || cmd.length == 0) { return; }
+    console.log(cmd);
     device.write(cmd, function(err, results) {
       if (err) logger('Epson Projector write error: '+err);
     });
   }
 
   this.command = function(cmd) {
-    write(cmd + "\r");
+    queue.push(cmd);
+    queue.push("PWR?");
+    write("\r");
   };
 
   /**
    * read
    */
   function read(data) {
+    console.log(data);
     if (data.length == 0) { return; }
 
     try {
-      if (data.match(/^:/)) {
-        response_handler(data);
-      }
+       var m = response.match(/PWR=(.*)$/);
+       if (m) {
+         var level = m[1];
+         if (level=='00')
+           response_handler('OFF');
+         else 
+           response_handler('ON');
     } catch (err) {
       logger('Error: '+err);
     }
   }
 
   function response_handler(data) {
-    notify({type: 'status', data: data.substr(1)});
+    var obj = {type: 'status', data: data};
+    notify(JSON.stringify(obj));
   }
 
   /**
@@ -151,18 +168,4 @@ function ESCVP21 () {
       logger('Detected serial ports: ' + JSON.stringify(serialPorts));
     });
   }
-
-  /**
-   * discover
-   */
-  this.discover = function() {
-    if (nconf.get('epson:projectorConfig')) {
-      notify(JSON.stringify(nconf.get('epson:projectorConfig')));
-      logger('Completed projector discovery');
-    } else {
-      logger('** NOTICE ** Panel configuration not set in config file!');
-    }
-  };
-
-
 }
