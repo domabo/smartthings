@@ -181,5 +181,5 @@ function ESCVP21 () {
         emitter.emit('data', part + ':');
       });
     };
-  },
+  }
 }
